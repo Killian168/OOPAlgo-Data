@@ -48,9 +48,9 @@ public class MainDriver {
 		} while (error == true); // Re-show panel if error
 
 		String postfix = pos.convertToPostfix(UserInput);
-		JOptionPane.showMessageDialog(null, postfix);
 		double res = pos.evaluatePostfix(postfix);
-		JOptionPane.showMessageDialog(null, res);
+		String showUser = "Equation entered -> " + UserInput + "\n" + "PostFix -> " + postfix + "\n" + "Evaluation = " + res; 
+		JOptionPane.showMessageDialog(null, showUser);
 		
 
 	}// End constructor

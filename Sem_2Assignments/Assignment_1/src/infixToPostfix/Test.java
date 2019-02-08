@@ -156,7 +156,7 @@ public class Test {
 
 		System.out.println("amount incorrect: " + incorrect);
 		System.out.println("amount correct: " + correct);
-		if (incorrect > 0) {
+		if (incorrect > 0) { // If incorrect -> print all for examination
 			for (int i = 0; i < results.size(); i++) {
 				System.out.println(results.get(i));
 			}
