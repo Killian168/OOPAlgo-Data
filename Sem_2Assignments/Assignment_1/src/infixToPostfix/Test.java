@@ -89,15 +89,16 @@ public class Test {
 
 		// Test for division operation: A/B
 		for (int a = 0; a < 10; a++) {
-			for (int b = 0; b < 10; b++) { // Can not divide by 0
+			for (int b = 0; b < 10; b++) {
 				s = "";
 				s += Integer.toString(a);
 				s += "/";
 				s += Integer.toString(b);
 				String Res = s + " " + " " + (double)((double)a / (double)b) + " ";
 				String postfix = pos.convertToPostfix(s);
-				double res = pos.evaluatePostfix(postfix);
-				if (res == (double)((double)a / (double)b)) {
+				Double res = pos.evaluatePostfix(postfix);
+				Double exans = (double)((double)a / (double)b);
+				if (res.equals(exans)) {
 					correct += 1;
 				} else {
 					incorrect += 1;
