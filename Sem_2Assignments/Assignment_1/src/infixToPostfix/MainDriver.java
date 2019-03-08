@@ -19,8 +19,8 @@ public class MainDriver {
 	 */
 	
 	public static void main(String[] args) {
-		Test t = new Test();
-		//MainDriver m = new MainDriver();
+		//Test t = new Test();
+		MainDriver m = new MainDriver();
 	}// End main
 
 	// Main driver method
@@ -64,12 +64,12 @@ public class MainDriver {
 
 		// Tell user what is wrong
 		if (error == true) {
-			JOptionPane.showMessageDialog(null, "You must enter an equatino using single digits 0-9 "
+			JOptionPane.showMessageDialog(null, "You must enter an equation using single digits 0-9 "
 					+ "and +, -, *, /, ^, (, )\nAnd it must be" + "between 3 and 20 charachter long");
 		} // end if
 
 		// Asks user for input
-		return JOptionPane.showInputDialog("Please input your equation in postfix notation");
+		return JOptionPane.showInputDialog("Please input your equation in infix notation");
 
 	}// end getInput
 
