@@ -1,5 +1,13 @@
 package assignment3;
 
+/**
+ * A guessing game implementin gthe BinaryNodeInterface
+ * and the BinaryTreeInterface
+ * 
+ * @author Killian O'Dálaigh
+ * @version 29/03/2019
+ */
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -11,32 +19,53 @@ import java.io.ObjectOutputStream;
 
 import javax.swing.JOptionPane;
 
+/**
+ * @author Killian O'Dálaigh
+ * @version 29 Mar 2019
+ * Description: Main driving class of the program
+ * 
+ * Includes the entry point for the program
+ */
 public class DriverMain {
 
+	// Member data
 	BinaryTree<String> tree = new BinaryTree<String>();
 	private static String workingDir = "_";
 
+	/**
+	 * Class constructor
+	 */
 	public DriverMain() {
-
 		createTree();
+		displayStats(tree);
 		showMenu();
+	}// end constructor
 
-	}
-
+	
+	/**
+	 * @param args
+	 * Entry point for the program
+	 */
 	public static void main(String[] args) {
 		workingDir = System.getProperty("user.dir");
 		System.out.println(workingDir);
 		DriverMain d = new DriverMain();
 	} // end of main
 
-	public void createTree() {
-		// To create a tree, build it up from the bottom:
-		// create subtree for each leaf, then create subtrees linking them,
-		// until we reach the root.
+	
+	/**
+	 * Creates a default tree for the game to guess based on
+	 * 
+	 * Tree has 5 levels
+	 * 17 nodes
+	 * and the root node is Are you thinking of an Animal?
+	 */
+	public void createTree() 
+	{
 
-		System.out.println("\nCreating a tree\n");
+		System.out.println("\nCreating a default tree\n");
 
-		// First the leaves
+		// Creates the tree
 		BinaryTree<String> pTree = new BinaryTree<String>("Is it an Eagle?");
 		BinaryTree<String> qTree = new BinaryTree<String>("Is it a Penguin?");
 		BinaryTree<String> hTree = new BinaryTree<String>("Is it a Bear");
@@ -54,16 +83,23 @@ public class DriverMain {
 		BinaryTree<String> bTree = new BinaryTree<String>("Is it a Mammal?", dTree, eTree);
 		BinaryTree<String> cTree = new BinaryTree<String>("Are you thining of a car", fTree, gTree);
 		this.tree.setTree("Are you thinking of an animal?", bTree, cTree);
-	} // end createTree1
+	} // end createTree
 
-	private void showMenu() {
+	/**
+	 * Shows the menu to the user and does error checking on the input
+	 */
+	private void showMenu() 
+	{
 
+		// Method data
 		boolean error = false;
 		String ans = "_";
 
+		// Menu string for the user
 		String menu = " Enter 1 to play\n Enter 2 to save the tree\n "
 				+ "Enter 3 to load a previously saved tree\n Enter q to quit the game";
 
+		// Loop for the display
 		do {
 			error = false;
 			ans = JOptionPane.showInputDialog(menu);
@@ -86,18 +122,24 @@ public class DriverMain {
 			}
 		} while (error);
 
-	}
+	}// end showMenu()
 
-	private void saveTree() {
-
+	/**
+	 * Saves the tree to disk
+	 */
+	private void saveTree() 
+	{
+		// Method data
 		boolean error = false;
 		String treeName = "_";
 		boolean write = true;
 
+		// Loop for the save
 		do {
 
 			write = true;
 
+			// Asks user to name the tree to save
 			do {
 				error = false;
 				treeName = JOptionPane.showInputDialog("Please name this tree");
@@ -112,6 +154,7 @@ public class DriverMain {
 			File tmpFile = new File(treeName);
 			boolean exists = tmpFile.exists();
 
+			// If the name already exsists then the user is asked to overwrite to file or not
 			if (exists) {
 				String ans = "_";
 				ans = JOptionPane
@@ -122,6 +165,7 @@ public class DriverMain {
 				}
 			}
 
+			// Write the file to disk
 			if (write) {
 				try {
 
@@ -140,11 +184,22 @@ public class DriverMain {
 
 		} while (!write);
 
-	}
+	}// end saveTree()
 
-	private void loadTree() {
-
+	
+	/**
+	 * Loads a tree from disk into the current game
+	 */
+	private void loadTree() 
+	{
+		// Member data
 		File directoryPath = new File(workingDir);
+		String fileNames = "_";
+		String ans = "_";
+		boolean error = false;
+		boolean loaded = false;
+		
+		// Retrieves all the names of trees in the disk directory
 		File[] files = directoryPath.listFiles(new FilenameFilter() {
 			@Override
 			public boolean accept(File dir, String name) {
@@ -152,23 +207,21 @@ public class DriverMain {
 			}
 		});
 
-		String fileNames = "_";
-
+		// Concatenates the names of the trees for displaying to the user
 		for (File file : files) {
 			fileNames += file.getName() + "\n";
 		}
 
-		String ans = "_";
-		boolean error = false;
-
+		// Loop for loading the tree
 		do {
-			error = false;
+			loaded = false;
 			ans = JOptionPane.showInputDialog("Enter the tree you wish to choose:\n" + fileNames);
 
 			if (!ans.contains(".txt")) {
 				ans += ".txt";
 			}
 			
+			// Loop through the files until the right file matching the user input is found
 			for (File file : files) {
 				if (file.getName().equals(ans)) {
 					try {
@@ -179,6 +232,7 @@ public class DriverMain {
 						Oi.close();
 						Fi.close();
 						displayStats(this.tree);
+						loaded = true;
 					} catch (FileNotFoundException e) {
 						System.out.println("File not found");
 					} catch (IOException e) {
@@ -188,13 +242,25 @@ public class DriverMain {
 					}
 				}
 			}
+			
+			if(!loaded) {
+				ans = JOptionPane.showInputDialog("There was an error and your file could not be found"
+						+ "Please enter anything to try again");
+			}
 
-		} while (error);
+		} while (!loaded);
 
-	}
+	}// end loadTree()
 
-	private void incorrectAnswer(BinaryNodeInterface<String> currentNode) {
+	/**
+	 * @param currentNode
+	 * 
+	 * Asks the user to improve the current tree after guessing wrong
+	 */
+	private void incorrectAnswer(BinaryNodeInterface<String> currentNode) 
+	{
 
+		// Member data
 		String ans = "_";
 		String question = "_";
 
@@ -204,6 +270,7 @@ public class DriverMain {
 				+ "the correct answer and the one I gave, where the correct answer would be given by a yes"
 				+ "answer to the question");
 
+		// Inserts the new question and answer
 		BinaryNode<String> newNode = new BinaryNode<String>(currentNode.getData());
 		currentNode.setData(question);
 		currentNode.setLeftChild(new BinaryNode<String>(ans));
@@ -213,9 +280,13 @@ public class DriverMain {
 
 		showMenu();
 
-	}
+	}// end incorrectAnswer()
 
-	private void playGame() {
+	/**
+	 * The game logic for the user to play the game
+	 */
+	private void playGame() 
+	{
 
 		// Variable to store user answer here
 		String ans = "";
@@ -284,8 +355,13 @@ public class DriverMain {
 			} while (error);
 		}
 
-	}
+	}// end playGame()
 
+	/**
+	 * @param tree
+	 * 
+	 * Displays the stats of a tree in the console
+	 */
 	public static void displayStats(BinaryTree<String> tree) {
 		if (tree.isEmpty())
 			System.out.println("The tree is empty");
@@ -295,6 +371,6 @@ public class DriverMain {
 		System.out.println("Root of tree is " + tree.getRootData());
 		System.out.println("Height of tree is " + tree.getHeight());
 		System.out.println("No. of nodes in tree is " + tree.getNumberOfNodes());
-	} // end displayStats
+	} // end displayStats()
 
-}
+}// end class DriverMain
